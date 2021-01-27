@@ -1,0 +1,74 @@
+kind: pipeline
+type: docker
+name: PR pipeline
+
+steps:
+  - name: lint
+    image: hub.docker.local/drone-commitlint
+
+  - name: test
+    image: gradle:jdk8
+    commands:
+      - gradle build
+
+trigger:
+  event:
+    - pull_request
+
+---
+kind: pipeline
+type: docker
+name: CI pipeline
+
+steps:
+  - name: build
+    image: gradle:jdk8
+    environment:
+      repo_user:
+        from_secret: nexus_user
+      repo_password:
+        from_secret: nexus_password
+    commands:
+      - gradle build
+      - echo "${DRONE_COMMIT_BRANCH}" > .tags
+      - gradle publish
+
+trigger:
+  branch:
+    - master
+  event:
+    - push
+
+---
+kind: pipeline
+type: docker
+name: CD pipeline
+
+steps:
+  - name: build
+    image: gradle:jdk8
+    commands:
+      - gradle build
+
+  - name: versioning
+    image: hub.docker.local/drone-semantic-release
+    settings:
+      git_login:
+        from_secret: git_user
+      git_password:
+        from_secret: git_password
+
+  - name: publish
+    image: gradle:jdk8
+    environment:
+      is_release: true
+      repo_user:
+        from_secret: nexus_user
+      repo_password:
+        from_secret: nexus_password
+    commands:
+      - gradle publish
+
+trigger:
+  event:
+    - promote

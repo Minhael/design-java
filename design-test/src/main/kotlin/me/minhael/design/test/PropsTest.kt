@@ -1,0 +1,162 @@
+package me.minhael.design.test
+
+import me.minhael.design.props.Props
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import java.io.File
+import java.lang.RuntimeException
+
+abstract class PropsTest {
+
+    abstract val props: Props
+
+    @BeforeEach
+    fun setup() {
+        props.clear()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        props.clear()
+    }
+
+    @Test
+    fun testProps() {
+        props.apply {
+            put(pInt, vInt)
+            put(pLong, vLong)
+            put(pString, vStr)
+            put(pBytes, vBytes)
+            put(pByte, vByte)
+            put(pChar, vChar)
+            put(pChars, vChars)
+            put(pBool, vBool)
+        }
+
+        props.apply {
+            assertEquals(vInt, get(pInt, 0))
+            assertEquals(vLong, get(pLong, 0L))
+            assertEquals(vStr, get(pString, ""))
+            assertArrayEquals(vBytes, get(pBytes, byteArrayOf()))
+            assertEquals(vByte, get(pByte, 0.toByte()))
+            assertEquals(vChar, get(pChar, '\u0000'))
+            assertArrayEquals(vChars, get(pChars, charArrayOf()))
+            assertEquals(vBool, get(pBool, false))
+        }
+
+        props.apply {
+            assertTrue(has(pInt))
+            assertTrue(has(pLong))
+            assertTrue(has(pString))
+            assertTrue(has(pBytes))
+            assertTrue(has(pByte))
+            assertTrue(has(pChar))
+            assertTrue(has(pChars))
+            assertTrue(has(pBool))
+        }
+    }
+
+    @Test
+    fun testDefaultValues() {
+        props.apply {
+            assertFalse(has(pInt))
+            assertFalse(has(pLong))
+            assertFalse(has(pString))
+            assertFalse(has(pBytes))
+            assertFalse(has(pByte))
+            assertFalse(has(pChar))
+            assertFalse(has(pChars))
+            assertFalse(has(pBool))
+        }
+
+        props.apply {
+            assertEquals(0, get(pInt, 0))
+            assertEquals(0L, get(pLong, 0L))
+            assertEquals("", get(pString, ""))
+            assertArrayEquals(byteArrayOf(), get(pBytes, byteArrayOf()))
+            assertEquals(0.toByte(), get(pByte, 0.toByte()))
+            assertEquals('\u0000', get(pChar, '\u0000'))
+            assertArrayEquals(charArrayOf(), get(pChars, charArrayOf()))
+            assertEquals(false, get(pBool, false))
+        }
+    }
+
+    @Test
+    fun testCommit() {
+        try {
+            props.commit {
+                it.apply {
+                    put(pInt, vInt)
+                    put(pLong, vLong)
+                    put(pString, vStr)
+                    put(pBytes, vBytes)
+                    put(pByte, vByte)
+                    put(pChar, vChar)
+                    put(pChars, vChars)
+                    put(pBool, vBool)
+                }
+                throw RuntimeException()
+            }
+        } catch (e: RuntimeException) {
+            //  Success
+        }
+
+        props.apply {
+            assertFalse(has(pInt))
+            assertFalse(has(pLong))
+            assertFalse(has(pString))
+            assertFalse(has(pBytes))
+            assertFalse(has(pByte))
+            assertFalse(has(pChar))
+            assertFalse(has(pChars))
+            assertFalse(has(pBool))
+        }
+
+        props.commit {
+            it.apply {
+                put(pInt, vInt)
+                put(pLong, vLong)
+                put(pString, vStr)
+                put(pBytes, vBytes)
+                put(pByte, vByte)
+                put(pChar, vChar)
+                put(pChars, vChars)
+                put(pBool, vBool)
+            }
+        }
+
+        props.apply {
+            assertEquals(vInt, get(pInt, 0))
+            assertEquals(vLong, get(pLong, 0L))
+            assertEquals(vStr, get(pString, ""))
+            assertArrayEquals(vBytes, get(pBytes, byteArrayOf()))
+            assertEquals(vByte, get(pByte, 0.toByte()))
+            assertEquals(vChar, get(pChar, '\u0000'))
+            assertArrayEquals(vChars, get(pChars, charArrayOf()))
+            assertEquals(vBool, get(pBool, false))
+        }
+    }
+
+    companion object {
+        private const val pInt = "int"
+        private const val pLong = "long"
+        private const val pString = "string"
+        private const val pBytes = "bytes"
+        private const val pByte = "byte"
+        private const val pChar = "char"
+        private const val pChars = "chars"
+        private const val pBool = "bool"
+
+        private const val vInt = 1
+        private const val vLong = 2L
+        private const val vStr = "3"
+        private val vBytes = byteArrayOf(0x4, 0x5)
+        private const val vByte = 0x6.toByte()
+        private const val vChar = 'g'
+        private val vChars = "89".toCharArray()
+        private const val vBool = true
+    }
+}

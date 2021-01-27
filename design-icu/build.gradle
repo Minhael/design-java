@@ -1,0 +1,7 @@
+dependencies {
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    testImplementation project(":design-test")
+
+    implementation group: 'com.ibm.icu', name: 'icu4j-charset', version: '63.1'
+}

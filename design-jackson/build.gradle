@@ -1,0 +1,9 @@
+dependencies {
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    testImplementation project(":design-test")
+
+    //  Upgrading must fix this to allow deploying on Android
+    //  https://github.com/FasterXML/jackson-module-kotlin/issues/176
+    api "com.fasterxml.jackson.core:jackson-databind:2.9.6"
+}

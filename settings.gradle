@@ -1,0 +1,10 @@
+rootProject.name = 'design'
+include 'design-fst'
+include 'design-icu'
+include 'design-okhttp'
+include 'design-ktx'
+include 'design-jackson'
+include 'design-bootstrap'
+include 'design-objectbox'
+include 'design-test'
+

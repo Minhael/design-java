@@ -1,0 +1,9 @@
+dependencies {
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    testImplementation project(":design-test")
+
+    api("de.ruedigermoeller:fst:2.56") {
+        exclude group: 'org.javassist', module: 'javassist'
+    }
+}

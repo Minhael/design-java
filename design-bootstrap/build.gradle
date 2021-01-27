@@ -1,0 +1,14 @@
+dependencies {
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    testImplementation project(":design-test")
+    testImplementation project(':design-fst')
+
+    //  Crypto algorithms
+    api 'com.madgag.spongycastle:core:1.58.0.0'
+
+    // https://mvnrepository.com/artifact/joda-time/joda-time
+    api 'joda-time:joda-time:2.10.9'
+
+    api project(':design-ktx')
+}

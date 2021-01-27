@@ -1,0 +1,5 @@
+dependencies {
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    testImplementation project(":design-test")
+}
