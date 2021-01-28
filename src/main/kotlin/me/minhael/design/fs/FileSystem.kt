@@ -7,7 +7,7 @@ interface FileSystem {
 
     /* Operations */
     fun create(mimeType: String, filename: String): String
-    fun copy(inputStream: InputStream, mimeType: String, filename: String): Long
+    fun copy(inputStream: InputStream, mimeType: String, filename: String): String
     fun delete(filename: String): Boolean
     fun peek(uri: String): Meta
     fun browse(uri: String): FileSystem
