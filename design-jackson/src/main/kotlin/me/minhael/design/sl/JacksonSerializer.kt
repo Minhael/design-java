@@ -24,7 +24,7 @@ import java.lang.reflect.Type
  * Please use [Data] otherwise.
  */
 class JacksonSerializer(
-    builder: () -> ObjectMapper = { base() }
+    builder: () -> ObjectMapper = { default() }
 ) : Serializer {
 
     private val mapper: ObjectMapper by lazy { builder() }
