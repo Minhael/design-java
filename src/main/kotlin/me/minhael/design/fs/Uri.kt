@@ -10,7 +10,14 @@ object Uri {
 
         val schemes: List<String>
 
+        /**
+         * Read from URI resource
+         */
         fun readFrom(uri: String): InputStream
+
+        /**
+         * Write to URI resource
+         */
         fun writeTo(uri: String): OutputStream
     }
 
