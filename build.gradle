@@ -45,7 +45,7 @@ allprojects {
         }
         publications {
             mavenJava(MavenPublication) {
-                version = "${new File('.tags').text.trim()}${System.env.is_release ? "" : "-SNAPSHOT"}"
+                version = "${file('.tags').absolutePath.trim()}${System.env.is_release ? "" : "-SNAPSHOT"}"
 
                 from components.java
                 artifact sourcesJar

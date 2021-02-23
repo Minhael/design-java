@@ -36,7 +36,9 @@ class Objectbox(
         boxStore.closeThreadResources()
     }
 
-    override fun close() {}
+    override fun close() {
+        boxStore.close()
+    }
 
     interface DaoBuilder<DAO : Any> {
         fun entityClass(): Class<DAO>

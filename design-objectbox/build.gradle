@@ -1,3 +1,24 @@
-dependencies {
-    api "io.objectbox:objectbox-kotlin:2.8.1"
+buildscript {
+    ext {
+        objectboxVersion = '2.9.0'
+    }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
+    }
 }
+
+apply plugin: 'kotlin-kapt'
+
+dependencies {
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    kaptTest  "io.objectbox:objectbox-processor:$objectboxVersion"
+
+    testImplementation project(":design-test")
+
+    api "io.objectbox:objectbox-kotlin:$objectboxVersion"
+}
+
+apply plugin: 'io.objectbox'
