@@ -5,6 +5,7 @@ plugins {
 ext {
     release = 'http://ne.xus/repository/maven-releases/'
     snapshots = 'http://ne.xus/repository/maven-snapshots/'
+    versionTag = project.file('.tags').absolutePath
 }
 
 group "me.minhael"
@@ -45,7 +46,7 @@ allprojects {
         }
         publications {
             mavenJava(MavenPublication) {
-                version = "${file('.tags').absolutePath.trim()}${System.env.is_release ? "" : "-SNAPSHOT"}"
+                version = "${new File(versionTag).text.trim()}${System.env.is_release ? "" : "-SNAPSHOT"}"
 
                 from components.java
                 artifact sourcesJar
