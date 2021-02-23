@@ -1,24 +1,25 @@
 package me.minhael.design.sl
 
 import me.minhael.design.test.SerializerTest
+import me.minhael.design.test.SerializerTest.Companion.test
 import me.minhael.design.test.TVals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.io.Serializable
 
-internal class JacksonSerializerTest: SerializerTest() {
-    override val serializer = JacksonSerializer { JacksonSerializer.default() }
+internal class JacksonSerializerTest: SerializerTest {
+    override val subject = JacksonSerializer { JacksonSerializer.default() }
 
     @Test
     fun testSerialize() {
         testPrimitives()
-        test(jList)
-        test(jMap)
-        test(jComplexList)
-        test(jComplexMap)
-        test(jComplexCollections)
-        test(B())
-        test(C())
+        test(subject, jList)
+        test(subject, jMap)
+        test(subject, jComplexList)
+        test(subject, jComplexMap)
+        test(subject, jComplexCollections)
+        test(subject, B())
+        test(subject, C())
     }
 
     open class B(

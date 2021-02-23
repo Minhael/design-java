@@ -1,3 +1,6 @@
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
@@ -7,10 +10,10 @@ dependencies {
 
     //  Junit
     api 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    api 'org.hamcrest:hamcrest-core:2.2'
 
     //  Mockito
-    api 'org.mockito:mockito-core:2.28.2'
+    api 'org.mockito:mockito-core:3.7.7'
+    api 'org.mockito:mockito-junit-jupiter:3.7.7'
     api "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 
     //  For Android unit test which replaced joda time with Android variant

@@ -5,28 +5,28 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
 
-abstract class FileSystemTest {
+interface FileSystemTest {
 
-    abstract fun new(): FileSystem
+    val subject: FileSystem
+    val input: List<Pair<FileSystem.Meta, String>>
 
-    lateinit var subject: FileSystem
+    companion object {
+        val default = listOf(
+            FileSystem.Meta("", "file1.txt", "text/plain", 272L) to "Quick Brown Fox Jump Over Lazy Dog",
+            FileSystem.Meta("", "file2.txt", "text/plain", 96L) to "Hello World!"
+        )
+    }
 
     @BeforeEach
     fun setup() {
-        subject = new()
+
     }
 
     @AfterEach
     fun tearDown() {
         subject.destroy()
     }
-
-    open val files = listOf(
-        FileSystem.Meta("", "file1.txt", "text/plain", 272L) to "Quick Brown Fox Jump Over Lazy Dog",
-        FileSystem.Meta("", "file2.txt", "text/plain", 96L) to "Hello World!"
-    )
 
     @Test
     fun testFilesNegative() {
@@ -38,8 +38,8 @@ abstract class FileSystemTest {
     @Test
     fun testFiles() {
         //  Input
-        val (meta1, content1) = files[0]
-        val (meta2, content2) = files[1]
+        val (meta1, content1) = input[0]
+        val (meta2, content2) = input[1]
 
         //  First file
         val uri1 = subject.create(meta1.mimeType, meta1.filename)
@@ -100,8 +100,8 @@ abstract class FileSystemTest {
     @Test
     fun testDirs() {
         //  Input
-        val (meta1, content1) = files[0]
-        val (meta2, content2) = files[1]
+        val (meta1, content1) = input[0]
+        val (meta2, content2) = input[1]
 
         //  Create sub dirs
         val fs1 = subject.createDir("sub1")

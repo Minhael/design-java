@@ -4,7 +4,7 @@ import me.minhael.design.test.PropsTest
 import me.minhael.design.sl.FstSerializer
 import java.io.File
 
-internal class FilePropsTest : PropsTest() {
+internal class FilePropsTest : PropsTest {
     private val file = File(javaClass.classLoader.getResource("prop.properties").file)
-    override val props = FileProps(file, FstSerializer())
+    override val subject = FileProps(file, FstSerializer())
 }

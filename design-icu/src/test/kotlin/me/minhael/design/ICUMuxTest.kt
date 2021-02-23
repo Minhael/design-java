@@ -2,6 +2,7 @@ package me.minhael.design
 
 import me.minhael.design.test.CharsetsTest
 
-internal class ICUMuxTest: CharsetsTest() {
-    override val charsets = ICUMux.INSTANCE
+internal class ICUMuxTest: CharsetsTest {
+
+    override val subject = ICUMux.INSTANCE
 }

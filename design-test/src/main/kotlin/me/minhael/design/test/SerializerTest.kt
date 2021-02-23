@@ -2,45 +2,29 @@ package me.minhael.design.test
 
 import me.minhael.design.data.KeyChain
 import me.minhael.design.sl.Serializer
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is.`is`
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
-abstract class SerializerTest {
+interface SerializerTest {
 
-    abstract val serializer: Serializer
+    val subject: Serializer
 
-    protected fun testPrimitives() {
-        TVals.vList().forEach { test(it) }
-        test(TVals.vData())
-        test(TVals.A())
+    fun testPrimitives() {
+        TVals.vList().forEach { test(subject, it) }
+        test(subject, TVals.vData())
+        test(subject, TVals.A())
     }
 
-    protected fun testCollections() {
-        test(TVals.vList())
-        test(TVals.vMap())
-        test(TVals.vComplexList())
-        test(TVals.vComplexMap())
-        test(TVals.vComplexCollection())
-        test(TVals.B())
-        test(TVals.C())
-    }
-
-    protected inline fun <reified T: Any> test(obj: T, assertion: (T, T) -> Unit = { ex, re -> assertEquals(ex, re) }) {
-        val output = ByteArrayOutputStream().use {
-            serializer.serialize(obj, it)
-            it.toByteArray()
-        }
-
-        val result = ByteArrayInputStream(output).use {
-            serializer.deserialize(it, obj::class.java)
-        }
-
-        assertion(obj, result)
+    fun testCollections() {
+        test(subject, TVals.vList())
+        test(subject, TVals.vMap())
+        test(subject, TVals.vComplexList())
+        test(subject, TVals.vComplexMap())
+        test(subject, TVals.vComplexCollection())
+        test(subject, TVals.B())
+        test(subject, TVals.C())
     }
 
     companion object {
@@ -59,6 +43,19 @@ abstract class SerializerTest {
                 TVals.KEY_DATA,
                 TVals.KEY_LIST
             )
+        }
+
+        inline fun <reified T: Any> test(serializer: Serializer, obj: T) {
+            val output = ByteArrayOutputStream().use {
+                serializer.serialize(obj, it)
+                it.toByteArray()
+            }
+
+            val result = ByteArrayInputStream(output).use {
+                serializer.deserialize(it, obj::class.java)
+            }
+
+            assertEquals(obj, result)
         }
     }
 }

@@ -2,30 +2,28 @@ package me.minhael.design.test
 
 import me.minhael.design.props.Props
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.File
 import java.lang.RuntimeException
 
-abstract class PropsTest {
+interface PropsTest {
 
-    abstract val props: Props
+    val subject: Props
 
     @BeforeEach
     fun setup() {
-        props.clear()
+        subject.clear()
     }
 
     @AfterEach
     fun tearDown() {
-        props.clear()
+        subject.clear()
     }
 
     @Test
     fun testProps() {
-        props.apply {
+        subject.apply {
             put(pInt, vInt)
             put(pLong, vLong)
             put(pString, vStr)
@@ -36,7 +34,7 @@ abstract class PropsTest {
             put(pBool, vBool)
         }
 
-        props.apply {
+        subject.apply {
             assertEquals(vInt, get(pInt, 0))
             assertEquals(vLong, get(pLong, 0L))
             assertEquals(vStr, get(pString, ""))
@@ -47,7 +45,7 @@ abstract class PropsTest {
             assertEquals(vBool, get(pBool, false))
         }
 
-        props.apply {
+        subject.apply {
             assertTrue(has(pInt))
             assertTrue(has(pLong))
             assertTrue(has(pString))
@@ -61,7 +59,7 @@ abstract class PropsTest {
 
     @Test
     fun testDefaultValues() {
-        props.apply {
+        subject.apply {
             assertFalse(has(pInt))
             assertFalse(has(pLong))
             assertFalse(has(pString))
@@ -72,7 +70,7 @@ abstract class PropsTest {
             assertFalse(has(pBool))
         }
 
-        props.apply {
+        subject.apply {
             assertEquals(0, get(pInt, 0))
             assertEquals(0L, get(pLong, 0L))
             assertEquals("", get(pString, ""))
@@ -87,7 +85,7 @@ abstract class PropsTest {
     @Test
     fun testCommit() {
         try {
-            props.commit {
+            subject.commit {
                 it.apply {
                     put(pInt, vInt)
                     put(pLong, vLong)
@@ -104,7 +102,7 @@ abstract class PropsTest {
             //  Success
         }
 
-        props.apply {
+        subject.apply {
             assertFalse(has(pInt))
             assertFalse(has(pLong))
             assertFalse(has(pString))
@@ -115,7 +113,7 @@ abstract class PropsTest {
             assertFalse(has(pBool))
         }
 
-        props.commit {
+        subject.commit {
             it.apply {
                 put(pInt, vInt)
                 put(pLong, vLong)
@@ -128,7 +126,7 @@ abstract class PropsTest {
             }
         }
 
-        props.apply {
+        subject.apply {
             assertEquals(vInt, get(pInt, 0))
             assertEquals(vLong, get(pLong, 0L))
             assertEquals(vStr, get(pString, ""))

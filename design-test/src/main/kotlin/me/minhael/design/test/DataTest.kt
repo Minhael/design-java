@@ -8,49 +8,48 @@ import me.minhael.design.misc.Bytes
 import me.minhael.design.misc.Chars
 import org.junit.jupiter.api.*
 
-abstract class DataTest {
+interface DataTest {
 
-    abstract fun new(): MutableData
-
-    lateinit var data: MutableData
+    val subject: MutableData
+    fun new(): MutableData
 
     @BeforeEach
     fun setup() {
-        data = new()
+
     }
 
     @AfterEach
     fun tearDown() {
-        data.clear()
+        subject.clear()
     }
 
     @Test
     fun testData() {
         //  Prepare data
-        insert(data)
-        data[TVals.KEY_DATA] = new().apply { insert(this) }
-        data[TVals.KEY_LIST] = ArrayList()
+        insert(subject)
+        subject[TVals.KEY_DATA] = new().apply { insert(this) }
+        subject[TVals.KEY_LIST] = ArrayList()
         for (i in 0..3) {
-            data[TVals.KEY_LIST]?.add(new().apply { insert(this) })
+            subject[TVals.KEY_LIST]?.add(new().apply { insert(this) })
         }
 
         //  Test size
-        Assertions.assertEquals(10, data.size())
+        Assertions.assertEquals(10, subject.size())
 
         //  Test keys, has, get
-        assert(data)
-        Assertions.assertTrue(data.has(TVals.KEY_DATA))
-        Assertions.assertNotNull(data[TVals.KEY_DATA])
-        data[TVals.KEY_DATA]?.apply { assert(this) }
-        Assertions.assertTrue(data.has(TVals.KEY_LIST))
-        Assertions.assertNotNull(data[TVals.KEY_LIST])
-        data[TVals.KEY_LIST]?.apply {
+        assert(subject)
+        Assertions.assertTrue(subject.has(TVals.KEY_DATA))
+        Assertions.assertNotNull(subject[TVals.KEY_DATA])
+        subject[TVals.KEY_DATA]?.apply { assert(this) }
+        Assertions.assertTrue(subject.has(TVals.KEY_LIST))
+        Assertions.assertNotNull(subject[TVals.KEY_LIST])
+        subject[TVals.KEY_LIST]?.apply {
             Assertions.assertEquals(4, size)
             forEach { assert(it) }
         }
 
         //  Remove
-        data.apply {
+        subject.apply {
             remove(TVals.KEY_BOOL)
             remove(TVals.KEY_INT)
             remove(TVals.KEY_LONG)
@@ -63,12 +62,12 @@ abstract class DataTest {
             remove(TVals.KEY_LIST)
         }
 
-        Assertions.assertEquals(0, data.size())
+        Assertions.assertEquals(0, subject.size())
     }
 
     @Test
     fun testDefault() {
-        data.apply {
+        subject.apply {
             val keys = keys()
             Assertions.assertFalse(keys.contains(TVals.KEY_BOOL))
             Assertions.assertFalse(keys.contains(TVals.KEY_INT))
@@ -88,24 +87,24 @@ abstract class DataTest {
             Assertions.assertFalse(has(TVals.KEY_STR))
             Assertions.assertFalse(has(TVals.KEY_CHARS))
 
-            Assertions.assertEquals(false, data[TVals.KEY_BOOL, { false }])
-            Assertions.assertEquals(0, data[TVals.KEY_INT, { 0 }])
-            Assertions.assertEquals(0L, data[TVals.KEY_LONG, { 0L }])
-            Assertions.assertEquals(0.toByte(), data[TVals.KEY_BYTE, { 0.toByte() }])
-            Assertions.assertEquals('\u0000', data[TVals.KEY_CHAR, { '\u0000' }])
-            Assertions.assertEquals(Bytes(0x0), data[TVals.KEY_BYTES, { Bytes(0x0) }])
-            Assertions.assertEquals("a", data[TVals.KEY_STR, { "a" }])
-            Assertions.assertEquals(Chars('a'), data[TVals.KEY_CHARS, { Chars('a') }])
+            Assertions.assertEquals(false, subject[TVals.KEY_BOOL, { false }])
+            Assertions.assertEquals(0, subject[TVals.KEY_INT, { 0 }])
+            Assertions.assertEquals(0L, subject[TVals.KEY_LONG, { 0L }])
+            Assertions.assertEquals(0.toByte(), subject[TVals.KEY_BYTE, { 0.toByte() }])
+            Assertions.assertEquals('\u0000', subject[TVals.KEY_CHAR, { '\u0000' }])
+            Assertions.assertEquals(Bytes(0x0), subject[TVals.KEY_BYTES, { Bytes(0x0) }])
+            Assertions.assertEquals("a", subject[TVals.KEY_STR, { "a" }])
+            Assertions.assertEquals(Chars('a'), subject[TVals.KEY_CHARS, { Chars('a') }])
         }
     }
 
     @Test
     fun testSame() {
-        insert(data)
-        data[TVals.KEY_DATA] = new().apply { insert(this) }
-        data[TVals.KEY_LIST] = ArrayList()
+        insert(subject)
+        subject[TVals.KEY_DATA] = new().apply { insert(this) }
+        subject[TVals.KEY_LIST] = ArrayList()
         for (i in 0..3) {
-            data[TVals.KEY_LIST]?.add(new().apply { insert(this) })
+            subject[TVals.KEY_LIST]?.add(new().apply { insert(this) })
         }
 
         val other = MapData().apply { insert(this) }
@@ -114,77 +113,77 @@ abstract class DataTest {
         for (i in 0..3) {
             other[TVals.KEY_LIST]?.add(new().apply { insert(this) })
         }
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_LIST]?.get(1)?.set(TVals.KEY_BOOL, false)
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_LIST]?.get(1)?.set(TVals.KEY_BOOL, true)
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_LIST]?.removeAt(0)
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_LIST] = ArrayList()
         for (i in 0..3) {
             other[TVals.KEY_LIST]?.add(new().apply { insert(this) })
         }
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_DATA]?.set(TVals.KEY_BOOL, false)
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_DATA]?.set(TVals.KEY_BOOL, true)
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_BOOL] = false
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_BOOL] = true
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_INT] = Int.MAX_VALUE
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_INT] = 1
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_LONG] = Long.MAX_VALUE
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_LONG] = 2L
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_BYTE] = Byte.MAX_VALUE
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_BYTE] = 3.toByte()
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_CHAR] = Char.MAX_VALUE
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_CHAR] = 'd'
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_STR] = "test"
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_STR] = "Quick Brown Fox Jumps Over Lazy Dog"
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_BYTES] = Bytes(0x1, 0x2)
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_BYTES] = Bytes(0x9a.toByte(), 0xbc.toByte())
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
 
         other[TVals.KEY_CHARS] = Chars('8', 'b')
-        Assertions.assertNotEquals(data, other)
+        Assertions.assertNotEquals(subject, other)
         other[TVals.KEY_CHARS] = Chars('7', '8')
-        Assertions.assertEquals(data, other)
-        Assertions.assertEquals(data.hashCode(), other.hashCode())
+        Assertions.assertEquals(subject, other)
+        Assertions.assertEquals(subject.hashCode(), other.hashCode())
     }
 
     private fun insert(data: MutableData) {
@@ -234,8 +233,8 @@ abstract class DataTest {
 
     companion object {
 
-        @BeforeAll
         @JvmStatic
+        @BeforeAll
         fun init() {
             KeyChain.DEFAULT.include(
                 TVals.KEY_BOOL,

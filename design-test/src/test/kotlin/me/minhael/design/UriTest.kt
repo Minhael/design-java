@@ -5,12 +5,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.junit.jupiter.MockitoExtension
 import java.io.InputStream
 import java.io.OutputStream
 
+@ExtendWith(MockitoExtension::class)
 internal class UriTest {
 
     @Mock
@@ -22,28 +24,26 @@ internal class UriTest {
     @Mock
     lateinit var outputStream: OutputStream
 
-    lateinit var resolver: Uri.Resolver
+    private val subject: Uri.Resolver by lazy {
+        Uri.Resolver(accessor)
+    }
 
     @BeforeEach
     fun setup() {
-        MockitoAnnotations.initMocks(this)
-
         `when`(accessor.schemes).thenReturn(listOf("MEM"))
-        `when`(accessor.readFrom("mem:test")).thenReturn(inputStream)
-        `when`(accessor.writeTo("mem:test")).thenReturn(outputStream)
-
-        resolver = Uri.Resolver(accessor)
     }
 
     @Test
     fun readFrom() {
-        assertEquals(inputStream, resolver.readFrom("mem:test"))
+        `when`(accessor.readFrom("mem:test")).thenReturn(inputStream)
+
+        assertEquals(inputStream, subject.readFrom("mem:test"))
     }
 
     @Test
     fun readInvalidUri() {
         try {
-            resolver.readFrom("123das09he1da")
+            subject.readFrom("123das09he1da")
             fail()
         } catch (e: UnsupportedOperationException) {
             //  Expected
@@ -53,7 +53,7 @@ internal class UriTest {
     @Test
     fun readNoSuchAccessor() {
         try {
-            resolver.readFrom("http://localhost")
+            subject.readFrom("http://localhost")
             fail()
         } catch (e: UnsupportedOperationException) {
             //  Expected
@@ -62,13 +62,15 @@ internal class UriTest {
 
     @Test
     fun writeTo() {
-        assertEquals(outputStream, resolver.writeTo("mem:test"))
+        `when`(accessor.writeTo("mem:test")).thenReturn(outputStream)
+
+        assertEquals(outputStream, subject.writeTo("mem:test"))
     }
 
     @Test
     fun writeInvalidUri() {
         try {
-            resolver.writeTo("123das09he1da")
+            subject.writeTo("123das09he1da")
             fail()
         } catch (e: UnsupportedOperationException) {
             //  Expected
@@ -78,7 +80,7 @@ internal class UriTest {
     @Test
     fun writeNoSuchAccessor() {
         try {
-            resolver.writeTo("http://localhost")
+            subject.writeTo("http://localhost")
             fail()
         } catch (e: UnsupportedOperationException) {
             //  Expected

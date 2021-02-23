@@ -24,13 +24,6 @@ allprojects {
         implementation "org.jetbrains.kotlin:kotlin-stdlib"
     }
 
-    compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-
     test {
         useJUnitPlatform()
     }
@@ -70,6 +63,13 @@ subprojects {
     dependencies {
         api rootProject
     }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 dependencies {
