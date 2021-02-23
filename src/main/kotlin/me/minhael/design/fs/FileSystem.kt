@@ -9,6 +9,7 @@ interface FileSystem {
     fun list(): List<String>
     fun create(mimeType: String, filename: String): String
     fun copy(inputStream: InputStream, mimeType: String, filename: String): String
+    fun find(filename: String): Meta?
     fun peek(uri: String): Meta?
     fun delete(uri: String): Boolean
 

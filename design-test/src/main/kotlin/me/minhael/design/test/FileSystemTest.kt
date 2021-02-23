@@ -31,6 +31,7 @@ interface FileSystemTest {
     @Test
     fun testFilesNegative() {
         assertEquals(0, subject.list().size)
+        assertNull(subject.find(""))
         assertNull(subject.peek(""))
         assertTrue(subject.delete(""))
     }
@@ -54,6 +55,7 @@ interface FileSystemTest {
             assertEquals(content1, result)
         }
         assertEquals(meta1.copy(uri = uri1), subject.peek(uri1))
+        assertEquals(meta1.copy(uri = uri1), subject.find(meta1.filename))
 
         //  Second file
         val uri2 = subject.create(meta2.mimeType, meta2.filename)
@@ -64,6 +66,7 @@ interface FileSystemTest {
             }
         }
         assertEquals(meta2.copy(uri = uri2), subject.peek(uri2))
+        assertEquals(meta2.copy(uri = uri2), subject.find(meta2.filename))
 
         //  Copy file
         val copied = "copied.txt"
@@ -74,6 +77,7 @@ interface FileSystemTest {
             assertEquals(content2, it.reader().readText())
         }
         assertEquals(meta2.copy(uri = uri3, filename = copied), subject.peek(uri3))
+        assertEquals(meta2.copy(uri = uri3, filename = copied), subject.find(copied))
 
         //  Assert list
         val allFiles = listOf(uri1, uri2, uri3)
@@ -85,6 +89,7 @@ interface FileSystemTest {
 
         //  Negative peek
         assertNull(subject.peek(uri2))
+        assertNull(subject.find(meta2.filename))
 
         //  Negative delete
         assertTrue(subject.delete(uri2))
