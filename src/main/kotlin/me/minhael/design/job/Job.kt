@@ -2,11 +2,11 @@ package me.minhael.design.job
 
 import java.io.Serializable
 
-fun interface Job : Serializable {
+interface Job : Serializable {
 
     fun build(): Task
 
-    interface Task {
+    fun interface Task {
         /**
          * true: Success
          * false: Failure

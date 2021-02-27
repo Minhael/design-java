@@ -128,7 +128,12 @@ interface JobManagerTest {
         val expression = "0 0 23 * * ?"
 
         val now = DateTime.now()
-        val pt1 = DateTime(now.year, now.monthOfYear, now.dayOfMonth, 23, 0).plusDays(1)
+        val pt1 = DateTime(now.year, now.monthOfYear, now.dayOfMonth, 23, 0).let {
+            if (it.isAfter(now))
+                it
+            else
+                it.plusDays(1)
+        }
         val pt2 = pt1.plusDays(1)
         val before1 = pt1.minusMillis(1)
         val before2 = pt2.minusMillis(1)
@@ -140,6 +145,7 @@ interface JobManagerTest {
         verify(task, times(0)).execute()
 
         //  Normal
+        advanceTo(name, now.millis, false)
         subject.set(name, JobTrigger.Cron(expression), job)
         advanceTo(name, before1.millis, false)
         verify(task, times(0)).execute()
@@ -152,6 +158,7 @@ interface JobManagerTest {
 
         //  Remove before consecutive execution
         reset(task)
+        advanceTo(name, now.millis, false)
         subject.set(name, JobTrigger.Cron(expression), job)
         advanceTo(name, before1.millis, false)
         verify(task, times(0)).execute()
